@@ -7,11 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.mockito.BDDMockito.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
@@ -24,17 +29,36 @@ public class TeacherServiceTest {
     @Mock
     TeacherRepository teacherRepository;
     Teacher teacher;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        teacher = Teacher.builder()
+                .id(1L)
+                .firstName("test")
+                .lastName("test")
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 
     @Test
     public void testFindById(){
+    Long id = 1L;
+   when(teacherRepository.findById(id)).thenReturn(Optional.of(teacher));
+   teacherservice.findById(id);
+   verify(teacherRepository).findById(id);
 
-   given(teacherRepository.findById(1L)).willReturn(Optional.of(teacher));
-  teacherservice.findById(teacher.getId());
-   verify(teacherRepository.findById(1L));
-
+    }
+    @Test
+    public void testFindAll(){
+    Teacher teacher =new Teacher();
+    teacher.setId(1L);
+    teacher.setCreatedAt(LocalDateTime.now());
+    teacher.setFirstName("test");
+    teacher.setLastName("test");
+    teacher.setUpdatedAt(LocalDateTime.now());
+    when(teacherRepository.findAll()).thenReturn(Arrays.asList(teacher));
+    teacherservice.findAll();
+    verify(teacherRepository).findAll();
     }
 }
